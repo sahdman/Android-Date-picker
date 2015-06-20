@@ -13,6 +13,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends FragmentActivity implements OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -34,7 +35,8 @@ public class MainActivity extends FragmentActivity implements OnDateSetListener,
             @Override
             public void onClick(View v) {
                 datePickerDialog.setVibrate(isVibrate());
-                datePickerDialog.setYearRange(1985, 2028);
+                datePickerDialog.setMinDate(new GregorianCalendar(2015, Calendar.APRIL, 3).getTime());
+                datePickerDialog.setMaxDate(new GregorianCalendar(2015, Calendar.JULY, 9).getTime());
                 datePickerDialog.setCloseOnSingleTapDay(isCloseOnSingleTapDay());
                 datePickerDialog.show(getSupportFragmentManager(), DATEPICKER_TAG);
             }

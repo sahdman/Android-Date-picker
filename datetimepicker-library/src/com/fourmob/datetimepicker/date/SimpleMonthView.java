@@ -1,5 +1,6 @@
 package com.fourmob.datetimepicker.date;
 
+import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.content.Context;
@@ -33,7 +34,7 @@ public class SimpleMonthView extends View {
     public static final String VIEW_PARAMS_SHOW_WK_NUM = "show_wk_num";
 
     private static final int SELECTED_CIRCLE_ALPHA = 60;
-    protected static int DEFAULT_HEIGHT = 32;
+    protected static int DEFAULT_HEIGHT = 48;
     protected static final int DEFAULT_NUM_ROWS = 6;
 	protected static int DAY_SELECTED_CIRCLE_SIZE;
 	protected static int DAY_SEPARATOR_WIDTH = 1;
@@ -51,10 +52,12 @@ public class SimpleMonthView extends View {
 
     protected Paint mMonthDayLabelPaint;
     protected Paint mMonthNumPaint;
+    protected Paint mMonthNumPaintDisabled;
     protected Paint mMonthTitleBGPaint;
     protected Paint mMonthTitlePaint;
     protected Paint mSelectedCirclePaint;
     protected int mDayTextColor;
+    protected int mDayTextColorDisabled;
     protected int mMonthTitleBGColor;
     protected int mMonthTitleColor;
     protected int mTodayNumberColor;
@@ -78,6 +81,8 @@ public class SimpleMonthView extends View {
     protected int mRowHeight = DEFAULT_HEIGHT;
     protected int mWidth;
     protected int mYear;
+    protected int mDayEnabledFrom;
+    protected int mDayEnabledTo;
 
 	private final Calendar mCalendar;
 	private final Calendar mDayLabelCalendar;
@@ -97,9 +102,13 @@ public class SimpleMonthView extends View {
 		mDayOfWeekTypeface = resources.getString(R.string.day_of_week_label_typeface);
 		mMonthTitleTypeface = resources.getString(R.string.sans_serif);
 		mDayTextColor = resources.getColor(R.color.date_picker_text_normal);
+        mDayTextColorDisabled = resources.getColor(R.color.date_picker_text_disabled);
 		mTodayNumberColor = resources.getColor(R.color.blue);
 		mMonthTitleColor = resources.getColor(R.color.white);
 		mMonthTitleBGColor = resources.getColor(R.color.circle_background);
+
+        mDayEnabledFrom = 0;
+        mDayEnabledTo = 31;
 
 		mStringBuilder = new StringBuilder(50);
 		mFormatter = new Formatter(mStringBuilder, Locale.getDefault());
@@ -114,6 +123,14 @@ public class SimpleMonthView extends View {
 
         initView();
 	}
+
+    public void setEnabledFrom(int day) {
+        mDayEnabledFrom = day;
+    }
+
+    public void setEnabledTo(int day) {
+        mDayEnabledTo = day;
+    }
 
 	private int calculateNumRows() {
         int offset = findDayOffset();
@@ -179,7 +196,10 @@ public class SimpleMonthView extends View {
 				mMonthNumPaint.setColor(mDayTextColor);
             }
 
-			canvas.drawText(String.format("%d", day), x, y, mMonthNumPaint);
+            if ( day >= mDayEnabledFrom && day <= mDayEnabledTo )
+			    canvas.drawText(String.format("%d", day), x, y, mMonthNumPaint);
+            else
+                canvas.drawText(String.format("%d", day), x, y, mMonthNumPaintDisabled);
 
 			dayOffset++;
 			if (dayOffset == mNumDays) {
@@ -242,6 +262,14 @@ public class SimpleMonthView extends View {
         mMonthNumPaint.setStyle(Style.FILL);
         mMonthNumPaint.setTextAlign(Align.CENTER);
         mMonthNumPaint.setFakeBoldText(false);
+
+        mMonthNumPaintDisabled = new Paint();
+        mMonthNumPaintDisabled.setAntiAlias(true);
+        mMonthNumPaintDisabled.setTextSize(MINI_DAY_NUMBER_TEXT_SIZE);
+        mMonthNumPaintDisabled.setStyle(Style.FILL);
+        mMonthNumPaintDisabled.setTextAlign(Align.CENTER);
+        mMonthNumPaintDisabled.setFakeBoldText(false);
+        mMonthNumPaintDisabled.setColor(mDayTextColorDisabled);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -261,7 +289,8 @@ public class SimpleMonthView extends View {
 	public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             SimpleMonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
-            if (calendarDay != null) {
+            if (calendarDay != null && calendarDay.day >= mDayEnabledFrom
+                    && calendarDay.day <= mDayEnabledTo) {
                 onDayClick(calendarDay);
             }
         }

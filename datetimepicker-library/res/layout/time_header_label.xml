@@ -18,7 +18,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="center"
-      android:background="@color/white" >
+      android:background="@color/blue" >
         <View
             android:id="@+id/center_view"
             android:layout_width="1dp"
@@ -33,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time_placeholder"
+            android:textColor="@color/white_transparent"
             android:layout_toLeftOf="@+id/separator"
             android:layout_centerVertical="true"
             android:visibility="invisible"
@@ -51,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_placeholder"
-                android:textColor="@color/blue"
+                android:textColor="@color/white_transparent"
                 android:gravity="center_horizontal"
                 android:layout_gravity="center"
                 style="@style/time_label" />
@@ -62,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time_separator"
+            android:textColor="@color/white_transparent"
             android:paddingLeft="@dimen/separator_padding"
             android:paddingRight="@dimen/separator_padding"
             android:layout_alignRight="@+id/center_view"
@@ -74,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time_placeholder"
+            android:textColor="@color/white_transparent"
             android:layout_toRightOf="@+id/separator"
             android:layout_centerVertical="true"
             android:visibility="invisible"
@@ -94,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/time_placeholder"
+                android:textColor="@color/white_transparent"
                 android:layout_gravity="center" />
         </FrameLayout>
         <com.sleepbot.datetimepicker.AccessibleTextView
@@ -109,6 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time_placeholder"
+            android:textColor="@color/white_transparent"
             android:paddingLeft="@dimen/ampm_left_padding"
             android:paddingRight="@dimen/ampm_left_padding"
             android:layout_toRightOf="@+id/minutes_space"

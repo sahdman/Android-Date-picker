@@ -47,8 +47,8 @@ public class CircleView extends View {
         super(context);
 
         Resources res = context.getResources();
-        mWhite = res.getColor(R.color.white);
-        mBlack = res.getColor(R.color.numbers_text_color);
+        mWhite = res.getColor(R.color.circle_background);
+        mBlack = res.getColor(R.color.date_picker_selector);
         mPaint.setAntiAlias(true);
 
         mIsInitialized = false;

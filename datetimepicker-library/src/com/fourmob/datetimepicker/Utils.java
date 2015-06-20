@@ -34,7 +34,7 @@ public class Utils {
             case Calendar.FEBRUARY:
                 return (year % 4 == 0) ? 29 : 28;
             default:
-                throw new IllegalArgumentException("Invalid Month");
+                throw new IllegalArgumentException("Invalid Month  " + month + " " + year);
         }
 	}
 

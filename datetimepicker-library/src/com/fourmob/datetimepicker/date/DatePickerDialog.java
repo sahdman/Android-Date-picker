@@ -24,6 +24,8 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
@@ -38,6 +40,8 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
     // https://code.google.com/p/android/issues/detail?id=13050
 	private static final int MAX_YEAR = 2037;
 	private static final int MIN_YEAR = 1902;
+    private static final int MIN_MONTH = 0;
+    private static final int MAX_MONTH = 11;
 
     private static final int UNINITIALIZED = -1;
 	private static final int MONTH_AND_DAY_VIEW = 0;
@@ -47,6 +51,10 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
     public static final String KEY_WEEK_START = "week_start";
     public static final String KEY_YEAR_START = "year_start";
     public static final String KEY_YEAR_END = "year_end";
+    public static final String KEY_MONTH_START = "month_end";
+    public static final String KEY_MONTH_END = "month_end";
+    public static final String KEY_FIRST_DAY = "first_day";
+    public static final String KEY_LAST_DAY = "last_day";
     public static final String KEY_CURRENT_VIEW = "current_view";
     public static final String KEY_LIST_POSITION = "list_position";
     public static final String KEY_LIST_POSITION_OFFSET = "list_position_offset";
@@ -67,6 +75,10 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
     private int mWeekStart = mCalendar.getFirstDayOfWeek();
     private int mMaxYear = MAX_YEAR;
     private int mMinYear = MIN_YEAR;
+    private int mMinMonth = MIN_MONTH;
+    private int mMaxMonth = MAX_MONTH;
+    private int mMinDay = 1;
+    private int mMaxDay = 31;
 
     private String mDayPickerDescription;
     private String mYearPickerDescription;
@@ -211,7 +223,27 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 		return mMinYear;
 	}
 
-	public SimpleMonthAdapter.CalendarDay getSelectedDay() {
+    @Override
+    public int getMinMonth() {
+        return mMinMonth;
+    }
+
+    @Override
+    public int getMaxMonth() {
+        return mMaxMonth;
+    }
+
+    @Override
+    public int getMinDay() {
+        return mMinDay;
+    }
+
+    @Override
+    public int getMaxDay() {
+        return mMaxDay;
+    }
+
+    public SimpleMonthAdapter.CalendarDay getSelectedDay() {
 		return new SimpleMonthAdapter.CalendarDay(mCalendar);
 	}
 
@@ -268,6 +300,10 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 			mWeekStart = bundle.getInt(KEY_WEEK_START);
 			mMinYear = bundle.getInt(KEY_YEAR_START);
 			mMaxYear = bundle.getInt(KEY_YEAR_END);
+            mMinMonth = bundle.getInt(KEY_MONTH_START);
+            mMaxMonth = bundle.getInt(KEY_MONTH_END);
+            mMinDay = bundle.getInt(KEY_FIRST_DAY);
+            mMaxDay = bundle.getInt(KEY_LAST_DAY);
 			currentView = bundle.getInt(KEY_CURRENT_VIEW);
 			listPosition = bundle.getInt(KEY_LIST_POSITION);
 			listPositionOffset = bundle.getInt(KEY_LIST_POSITION_OFFSET);
@@ -295,6 +331,14 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 		AlphaAnimation outAlphaAnimation = new AlphaAnimation(1.0F, 0.0F);
 		outAlphaAnimation.setDuration(300L);
 		mAnimator.setOutAnimation(outAlphaAnimation);
+
+        Button cancelBt = (Button) view.findViewById(R.id.cancel_button);
+        cancelBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
 		mDoneButton = ((Button) view.findViewById(R.id.done));
 		mDoneButton.setOnClickListener(new View.OnClickListener() {
@@ -345,6 +389,10 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 		bundle.putInt(KEY_WEEK_START, mWeekStart);
 		bundle.putInt(KEY_YEAR_START, mMinYear);
 		bundle.putInt(KEY_YEAR_END, mMaxYear);
+        bundle.putInt(KEY_MONTH_END, mMaxMonth);
+        bundle.putInt(KEY_MONTH_START, mMinMonth);
+        bundle.putInt(KEY_FIRST_DAY, mMinDay);
+        bundle.putInt(KEY_LAST_DAY, mMaxDay);
 		bundle.putInt(KEY_CURRENT_VIEW, mCurrentView);
 
 		int listPosition = -1;
@@ -397,6 +445,56 @@ public class DatePickerDialog extends DialogFragment implements View.OnClickList
 		if (mDayPickerView != null)
 			mDayPickerView.onChange();
 	}
+
+    public void setMinYear(int year) {
+        mMinYear = year;
+    }
+
+    public void setMaxYear(int year) {
+        mMaxYear = year;
+    }
+
+    public void setMinMonth(int month) {
+        mMinMonth = month;
+    }
+
+    public void setMaxMonth(int month) {
+        mMaxMonth = month;
+    }
+
+    public void setMinDay(int day) {
+        mMinDay = day;
+    }
+
+    public void setMaxDay(int day) {
+        mMaxDay = day;
+    }
+
+    public void setMaxDate(Date date) {
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        setMaxYear(year);
+        setMaxMonth(month);
+        setMaxDay(day);
+    }
+
+    public void setMinDate(Date date) {
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        setMinYear(year);
+        setMinMonth(month);
+        setMinDay(day);
+    }
 
 	public void tryVibrate() {
 		if (mVibrator != null && mVibrate) {

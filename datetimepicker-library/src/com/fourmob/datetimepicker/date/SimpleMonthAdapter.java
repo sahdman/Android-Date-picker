@@ -1,6 +1,7 @@
 package com.fourmob.datetimepicker.date;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -32,7 +33,8 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 	}
 
 	public int getCount() {
-        return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR;
+        return ((mController.getMaxYear() - mController.getMinYear()) + 1) * MONTHS_IN_YEAR
+                - mController.getMinMonth() - (11 - mController.getMaxMonth());
 	}
 
 	public Object getItem(int position) {
@@ -60,8 +62,28 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
         }
         drawingParams.clear();
 
-        final int month = position % MONTHS_IN_YEAR;
-        final int year = position / MONTHS_IN_YEAR + mController.getMinYear();
+        if ( position == 0 ) {
+            v.setEnabledFrom(mController.getMinDay());
+        } else {
+            v.setEnabledFrom(1);
+        }
+
+        if ( position == getCount() - 1 ) {
+            v.setEnabledTo(mController.getMaxDay());
+        } else {
+            v.setEnabledTo(31);
+        }
+
+        int tmp_month = position % MONTHS_IN_YEAR + mController.getMinMonth();
+        int tmp_year = position / MONTHS_IN_YEAR + mController.getMinYear();
+
+        if ( tmp_month >= MONTHS_IN_YEAR && tmp_month < MONTHS_IN_YEAR + mController.getMinMonth() ) {
+            tmp_year++;
+            tmp_month = tmp_month - MONTHS_IN_YEAR;
+        }
+
+        final int month = tmp_month;
+        final int year = tmp_year;
 
         int selectedDay = -1;
         if (isSelectedDayInMonth(year, month)) {

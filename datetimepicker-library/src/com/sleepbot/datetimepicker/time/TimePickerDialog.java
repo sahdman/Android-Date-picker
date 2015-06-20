@@ -31,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -78,8 +79,8 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
     private View mAmPmHitspace;
     private RadialPickerLayout mTimePicker;
 
-    private int mBlue;
-    private int mBlack;
+    private int mWhite;
+    private int mWhiteTransparent;
     private String mAmText;
     private String mPmText;
 
@@ -197,8 +198,8 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         mSelectHours = res.getString(R.string.select_hours);
         mMinutePickerDescription = res.getString(R.string.minute_picker_description);
         mSelectMinutes = res.getString(R.string.select_minutes);
-        mBlue = res.getColor(R.color.blue);
-        mBlack = res.getColor(R.color.numbers_text_color);
+        mWhite = res.getColor(R.color.white);
+        mWhiteTransparent = res.getColor(R.color.white_transparent);
 
         mHourView = (TextView) view.findViewById(R.id.hours);
         mHourView.setOnKeyListener(keyboardListener);
@@ -256,7 +257,15 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             }
         });
 
-        mDoneButton = (TextView) view.findViewById(R.id.done_button);
+        Button cancelBt = (Button) view.findViewById(R.id.cancel_button);
+        cancelBt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
+        mDoneButton = (TextView) view.findViewById(R.id.done);
         mDoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -440,8 +449,8 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             labelToAnimate = mMinuteView;
         }
 
-        int hourColor = (index == HOUR_INDEX) ? mBlue : mBlack;
-        int minuteColor = (index == MINUTE_INDEX) ? mBlue : mBlack;
+        int hourColor = (index == HOUR_INDEX) ? mWhite : mWhiteTransparent;
+        int minuteColor = (index == MINUTE_INDEX) ? mWhite : mWhiteTransparent;
         mHourView.setTextColor(hourColor);
         mMinuteView.setTextColor(minuteColor);
 
@@ -661,10 +670,10 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
                     String.format(minuteFormat, values[1]).replace(' ', mPlaceholderText);
             mHourView.setText(hourStr);
             mHourSpaceView.setText(hourStr);
-            mHourView.setTextColor(mBlack);
+            mHourView.setTextColor(mWhiteTransparent);
             mMinuteView.setText(minuteStr);
             mMinuteSpaceView.setText(minuteStr);
-            mMinuteView.setTextColor(mBlack);
+            mMinuteView.setTextColor(mWhiteTransparent);
             if (!mIs24HourMode) {
                 updateAmPmDisplay(values[2]);
             }
